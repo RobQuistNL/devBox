@@ -2,8 +2,13 @@ devbox
 ======
 
 A default webserver with optional services using Vagrant, Puppet and Git.
-
 This little helper will help you setup a project-specific development box in seconds.
+
+
+Work in progress
+----------------
+Please note that this is not yet a working version. Check out the issuelist if you'd like to help, or see whats wrong.
+
 
 How to use
 ------------
