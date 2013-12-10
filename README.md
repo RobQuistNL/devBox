@@ -1,4 +1,4 @@
-devbox
+dev::Box
 ======
 
 A default webserver with optional services using Vagrant, Puppet and Git.
