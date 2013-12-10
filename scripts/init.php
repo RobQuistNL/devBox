@@ -1,6 +1,8 @@
 <?php
 define('VERSION', 0.1);
 define('NL', PHP_EOL);
+define('DEFAULT_OUTPUT_DIR', __DIR__ . '/output');
+define('TEMPLATE_ASSET_PATH', __DIR__ . '/scripts/assets/');
 
 if (PHP_SAPI !== 'cli') {
     trigger_error('Script can only run from CLI!', E_USER_ERROR);
@@ -8,6 +10,7 @@ if (PHP_SAPI !== 'cli') {
 }
 
 require_once "CLI.class.php";
+require_once "Parser.class.php";
 require_once "DevBoxHelper.class.php";
 
 

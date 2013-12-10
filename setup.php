@@ -8,6 +8,9 @@ CLI::line('version ' . VERSION);
 CLI::line('DevBox by Enrise - Licensed under Apache2 License');
 CLI::line();
 
+$helper->getBox();
+$helper->getBoxMemory();
+
 $helper->getLongName();
 $helper->getShortName();
 $helper->getHostName();
@@ -18,46 +21,16 @@ CLI::line('=====================================================================
 CLI::line('=================================================================================');
 CLI::line();
 
-$defaultPackages = array(
-    'vim', // I've added both,
-    'nano', // Just so we don't get fights. (yet vim comes first)
-    'git',
-    'bash-completion',
-    'sl',
-    'make',
-    'zip',
-    'man',
-);
+$helper->getInstalledPackages();
+$helper->getOutputDirectory();
 
-CLI::line('Default packages: ' . implode(', ', $defaultPackages));
-$default = CLI::getLine('Install all default packages? (y/n) - Choose "n" to pick your own', 'y');
 
-foreach ($defaultPackages as $package) {
-    if ($default == 'n') {
-        $helper->getPackage($package, 'y');
-    } else {
-        $helper->addPackage($package);
-    }
-}
-CLI::line();
 
-$optionalPackages = array(
-    'tree',
-    'vim-enhanced',
-    'htop',
-    'screen',
-    'strace',
-);
-CLI::line('Default packages: ' . implode(', ', $optionalPackages));
+// Now that we have all the information, we'll setup the files.
+$parser = new Parser();
+$parser->setTemplate('Vagrantfile');
+$parser->setVar($helper->getSettings);
 
-$default = CLI::getLine('Install all optional packages? (y/n) - Choose "n" to pick your own', 'n');
-foreach ($optionalPackages as $package) {
-    if ($default == 'n') {
-        $helper->getPackage($package, 'y');
-    } else {
-        $helper->addPackage($package);
-    }
-}
+$outputDirectory = $helper->getSetting('outputdirectory');
 
-var_dump($helper->getPackages());
-var_dump($helper->getSettings());
+file_put_contents($outputDirectory . 'Vagrantfile', $parser->parse());
