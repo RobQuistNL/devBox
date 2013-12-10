@@ -11,6 +11,7 @@ if (PHP_SAPI !== 'cli') {
 }
 
 require_once "CLI.class.php";
+require_once "Manifest.class.php";
 require_once "Parser.class.php";
 require_once "DevBoxHelper.class.php";
 

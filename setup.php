@@ -22,6 +22,9 @@ CLI::line('=====================================================================
 CLI::line();
 
 $helper->getInstalledPackages();
+
+//$helper->getModules();
+
 $helper->getOutputDirectory(DEFAULT_OUTPUT_DIR);
 
 $outputDirectory = $helper->getSetting('outputdirectory');
@@ -41,3 +44,42 @@ $parser->setVar($helper->getSettings());
 file_put_contents($outputDirectory . 'Vagrantfile', $parser->parse());
 
 CLI::line('Creating folder structure.');
+@mkdir($outputDirectory . 'dev');
+@mkdir($outputDirectory . 'dev/puppet');
+
+$puppetDir = $outputDirectory . 'dev/puppet/';
+//@mkdir($puppetDir . 'files');
+@mkdir($puppetDir . 'manifests');
+@mkdir($puppetDir . 'modules');
+@mkdir($puppetDir . 'templates');
+
+CLI::line('Copying puppet files');
+
+copy(
+    TEMPLATE_ASSET_PATH . DIRECTORY_SEPARATOR . $helper->getSetting('boxname') . DIRECTORY_SEPARATOR . 'init.sh',
+    $puppetDir . 'init.sh'
+);
+
+copy(
+    TEMPLATE_ASSET_PATH . DIRECTORY_SEPARATOR . 'fileserver.conf',
+    $puppetDir . 'fileserver.conf'
+);
+
+CLI::line('Generating puppet manifests');
+$manifest = new Manifest($helper);
+file_put_contents(
+    $puppetDir . 'manifests/manifest.pp',
+    $manifest->mainManifest()
+);
+
+file_put_contents(
+    $puppetDir . 'manifests/' . $helper->getSetting('shortname') . '-packages.pp',
+    $manifest->packagesManifest()
+);
+
+file_put_contents(
+    $puppetDir . 'manifests/' . $helper->getSetting('shortname') . '-finalize.pp',
+    $manifest->finalizeManifest()
+);
+
+CLI::line('All done!');

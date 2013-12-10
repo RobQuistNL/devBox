@@ -33,7 +33,7 @@ class DevBoxHelper {
         ),
         array (
             'humanname' => 'CentOS 6.4 x86',
-            'name'      => 'centos64-64',
+            'name'      => 'centos64-32',
             'url'       => 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-i386-v20131103.box',
         ),
     );

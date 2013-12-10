@@ -51,6 +51,8 @@ class Parser {
     public function parse() {
 
         // This is very inefficient. I was too lazy to build a nice regex parser.
+        // Perhaps its a good idea to make the templates phtml files. Then we inject some variables
+        // and then you can easily parse PHP, grab the output and return it here!
         foreach ($this->variables as $key => $value) {
             $key = '{' . strtoupper($key) . '}';
             $this->content = str_replace($key, $value, $this->content);
