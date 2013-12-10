@@ -18,12 +18,12 @@ class DevBoxHelper {
     private $boxes = array(
         array (
             'humanname' => 'Ubuntu 12.04 x64',
-            'name'      => 'precise-64',
+            'name'      => 'precise64',
             'url'       => 'http://files.vagrantup.com/precise64.box',
         ),
         array (
             'humanname' =>'Ubuntu 12.04 x86',
-            'name'      => 'precise-32',
+            'name'      => 'precise32',
             'url'       => 'http://files.vagrantup.com/precise32.box',
         ),
         array (
@@ -230,25 +230,66 @@ class DevBoxHelper {
     /**
      * Ask the user for an writeable output directory
      */
-    public function getOutputDirectory()
+    public function getOutputDirectory($default)
     {
         CLI::line('Enter the output directory. This should be the *root* of your project.');
         CLI::line('You can also copy your files afterwards.');
-        $outputDirectory = CLI::getLine('Enter writeable, absolute directory', DEFAULT_OUTPUT_DIR);
+        $outputDirectory = CLI::getLine('Enter writeable directory', $default);
         $outputDirectory = rtrim($outputDirectory, DIRECTORY_SEPARATOR); //Remove *all* trailing slashes
         $outputDirectory = $outputDirectory . DIRECTORY_SEPARATOR; //Make sure there is a slash
+
+        /** Tested but does weird things on windows... */
+        /*
+        if (preg_match("/\/cygdrive\/([a-z])\/(.*)/", $outputDirectory) != 0) {
+            $outputDirectory = preg_replace("/\/cygdrive\/([a-z])\/(.*)/", "$1:/$2", $outputDirectory);
+            $outputDirectory = ucfirst(str_replace('/', '\\', $outputDirectory));
+
+            CLI::line('I see you\'re using cygwin. I have converted the path for you.');
+            CLI::line('Converted: ' . $outputDirectory);
+            if (CLI::getLine('Do you want to edit it? (y/n)', 'n') == 'y') {
+                $this->getOutputDirectory($outputDirectory);
+            }
+        }
+        */
 
         $this->setSetting('outputdirectory', $outputDirectory);
 
         if (!is_dir($outputDirectory)) {
             CLI::line('Directory (' . $outputDirectory . ') not found.');
-            $this->getOutputDirectory();
+            $this->getOutputDirectory($outputDirectory);
         }
 
-        if (!is_writable($outputDirectory)) {
+        if (!self::is_writable($outputDirectory)) {
             CLI::line('Directory (' . $outputDirectory . ') must be writable, dummy!');
-            $this->getOutputDirectory();
+            $this->getOutputDirectory($outputDirectory);
         }
+    }
+
+    /**
+     * The regular is_writeable kind of messes things up on windows / cygwin
+     * @param $path
+     * @return bool
+     */
+    public static function is_writable($path) {
+
+        if ($path{strlen($path)-1}=='/') {
+            return self::is_writable($path.uniqid(mt_rand()).'.tmp');
+        }
+
+        if (file_exists($path)) {
+            if (!($f = @fopen($path, 'r+'))) {
+                return false;
+            }
+            fclose($f);
+            return true;
+        }
+
+        if (!($f = @fopen($path, 'w'))) {
+            return false;
+        }
+        fclose($f);
+        unlink($path);
+        return true;
     }
 
     /**
