@@ -82,4 +82,30 @@ class Manifest {
 
         return $parser->parse();
     }
+
+    /**
+     * Creates an SH file to add needed modules via git.
+     *
+     * @param DevBoxHelper $devboxhelper
+     */
+    public function getInstallModulesGit()
+    {
+        $output = <<<TXT
+#!/bin/bash
+echo -n "Is this script ran in the project root? [y/n]"
+read answer
+if [\$answer -ne "y"]; then
+    echo "Well, it should. This adds needed git submodules in specific folders!"
+endif
+
+TXT;
+        foreach ($this->devboxhelper->getModules() as $module) {
+            $output .= 'git submodule add ' . $module['repo_url'] . ' dev/puppet/modules/' . $module['shortname'] . PHP_EOL;
+        }
+
+        $output .= 'git submodule update --init --recursive' . PHP_EOL;
+        $output .= 'echo "All done!"';
+
+        return $output;
+    }
 }

@@ -1,6 +1,10 @@
 <?php
 require(__DIR__ . "/scripts/init.php");
 
+$modules = new Puppetmodules();
+var_dump($modules->getAvailableModules());
+die;
+
 $helper = new DevBoxHelper();
 
 CLI::line('Welcome to the DevBox setup helper.');
@@ -48,7 +52,6 @@ CLI::line('Creating folder structure.');
 @mkdir($outputDirectory . 'dev/puppet');
 
 $puppetDir = $outputDirectory . 'dev/puppet/';
-//@mkdir($puppetDir . 'files');
 @mkdir($puppetDir . 'manifests');
 @mkdir($puppetDir . 'modules');
 @mkdir($puppetDir . 'templates');
@@ -80,6 +83,12 @@ file_put_contents(
 file_put_contents(
     $puppetDir . 'manifests/' . $helper->getSetting('shortname') . '-finalize.pp',
     $manifest->finalizeManifest()
+);
+
+CLI::line('Generating module scripts');
+file_put_contents(
+    $outputDirectory . 'install-modules-git.sh',
+    $manifest->getInstallModulesGit()
 );
 
 CLI::line('All done!');

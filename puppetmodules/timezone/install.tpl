@@ -1,0 +1,3 @@
+class { 'timezone':
+  timezone => '{TIMEZONE}',
+}

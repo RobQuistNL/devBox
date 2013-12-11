@@ -12,6 +12,11 @@ class DevBoxHelper {
     private $packages = array();
 
     /**
+     * @var array Holder for all our modules
+     */
+    private $modules = array();
+
+    /**
      * A list of vagrantboxes we can use
      * @var array
      */
@@ -19,6 +24,29 @@ class DevBoxHelper {
         array (
             'humanname' => 'Ubuntu 12.04 x64',
             'name'      => 'precise64',
+            'url'       => 'http://files.vagrantup.com/precise64.box',
+        ),
+        array (
+            'humanname' =>'Ubuntu 12.04 x86',
+            'name'      => 'precise32',
+            'url'       => 'http://files.vagrantup.com/precise32.box',
+        ),
+        array (
+            'humanname' => 'CentOS 6.4 x64',
+            'name'      => 'centos64-64',
+            'url'       => 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20131103.box',
+        ),
+        array (
+            'humanname' => 'CentOS 6.4 x86',
+            'name'      => 'centos64-32',
+            'url'       => 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-i386-v20131103.box',
+        ),
+    );
+
+    private $puppet_modules = array(
+        array (
+            'repo_url'  => 'Ubuntu 12.04 x64',
+            'shortname' => 'precise64',
             'url'       => 'http://files.vagrantup.com/precise64.box',
         ),
         array (
